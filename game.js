@@ -410,7 +410,15 @@ class GameScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(480, 460, 'spaceship');
         this.player.setScale(0.06); // Shrunk from 0.08
         this.player.setCollideWorldBounds(true);
-        this.player.setBodySize(this.player.width * 0.65, this.player.height * 0.65); // Tighter hitboxes
+        // Fix hitbox: use actual rendered size (raw width * scale * factor)
+        let pScale = 0.06;
+        let pHitW = this.player.width * pScale * 0.55;
+        let pHitH = this.player.height * pScale * 0.55;
+        this.player.body.setSize(pHitW / pScale, pHitH / pScale);
+        this.player.body.setOffset(
+            (this.player.width - pHitW / pScale) / 2,
+            (this.player.height - pHitH / pScale) / 2
+        );
         
         // Spaceship neon cyan jet thruster trail particles
         this.thrusterParticles = this.add.particles(0, 0, 'particle_dot', {
@@ -655,7 +663,7 @@ class GameScene extends Phaser.Scene {
         // Assign sprite attributes dynamically - SHRUNK SIZES MORE
         if (type === 'scout') {
             // Scout details: very small, moves moderately fast
-            enemy.setScale(0.035); // Shrunk further from 0.045
+            enemy.setScale(0.035);
             enemy.setTint(0xff0055);
             enemy.setVelocityY(150 + this.level * 10);
             enemy.setAngularVelocity(Phaser.Math.Between(-140, 140));
@@ -664,7 +672,7 @@ class GameScene extends Phaser.Scene {
             enemy.enemyType = 'scout';
         } else if (type === 'cruiser') {
             // Cruiser details: medium-large, purple, 2 HP
-            enemy.setScale(0.095); // Shrunk further from 0.13
+            enemy.setScale(0.095);
             enemy.setTint(0xbd00ff);
             enemy.setVelocityY(45 + this.level * 4);
             enemy.setAngularVelocity(Phaser.Math.Between(-30, 30));
@@ -673,7 +681,7 @@ class GameScene extends Phaser.Scene {
             enemy.enemyType = 'cruiser';
         } else {
             // Normal fighter: standard size, green, normal speed
-            enemy.setScale(0.055); // Shrunk further from 0.075
+            enemy.setScale(0.055);
             enemy.setTint(0x39ff14);
             enemy.setVelocityY(90 + this.level * 8);
             enemy.setAngularVelocity(Phaser.Math.Between(-70, 70));
@@ -682,8 +690,16 @@ class GameScene extends Phaser.Scene {
             enemy.enemyType = 'fighter';
         }
 
-        // Tighter physics bodies
-        enemy.setBodySize(enemy.width * 0.7, enemy.height * 0.7);
+        // Fix hitbox: calculate body size based on actual rendered pixels (width * scaleX)
+        // This ensures the physics box matches what the player actually sees
+        let s = enemy.scaleX;
+        let rawW = enemy.width;
+        let rawH = enemy.height;
+        // Hitbox = 60% of rendered size, centered
+        let hitW = rawW * 0.60;
+        let hitH = rawH * 0.60;
+        enemy.body.setSize(hitW, hitH);
+        enemy.body.setOffset((rawW - hitW) / 2, (rawH - hitH) / 2);
     }
 
     hitEnemy(laser, enemy) {
@@ -752,19 +768,25 @@ class GameScene extends Phaser.Scene {
         // Floating score popup texts
         this.spawnFloatingText(spawnX, spawnY, `+${points}`, '#39ff14');
 
-        // Cruiser division: split large cruiser into 2 diagonal flying scouts (Shrunk scouts)
+        // Cruiser division: split large cruiser into 2 diagonal flying scouts
         if (type === 'cruiser') {
             this.time.delayedCall(100, () => {
                 for (let i = -1; i <= 1; i += 2) {
                     let scout = this.enemies.create(spawnX + (i * 25), spawnY, 'alien');
-                    scout.setScale(0.035); // Shrunk scale further
+                    scout.setScale(0.035);
                     scout.setTint(0xff0055);
                     scout.setVelocity(i * 80, 150 + this.level * 10);
                     scout.setAngularVelocity(Phaser.Math.Between(-140, 140));
                     scout.hp = 1;
                     scout.points = 150;
                     scout.enemyType = 'scout';
-                    scout.setBodySize(scout.width * 0.7, scout.height * 0.7);
+                    // Fix hitbox to match rendered size
+                    let sRawW = scout.width;
+                    let sRawH = scout.height;
+                    let sHitW = sRawW * 0.60;
+                    let sHitH = sRawH * 0.60;
+                    scout.body.setSize(sHitW, sHitH);
+                    scout.body.setOffset((sRawW - sHitW) / 2, (sRawH - sHitH) / 2);
                 }
             });
         }
