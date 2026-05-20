@@ -203,9 +203,9 @@ class BootScene extends Phaser.Scene {
         let progress = this.add.graphics();
         let border = this.add.graphics();
         border.lineStyle(2, 0x00f0ff, 0.5);
-        border.strokeRect(250, 240, 300, 20);
+        border.strokeRect(330, 290, 300, 20);
 
-        let titleText = this.add.text(400, 200, 'CYBERNETIC INTERFACE LOADING...', {
+        let titleText = this.add.text(480, 250, 'CYBERNETIC INTERFACE LOADING...', {
             fontFamily: 'Orbitron',
             fontSize: '16px',
             fill: '#00f0ff',
@@ -216,7 +216,7 @@ class BootScene extends Phaser.Scene {
         this.load.on('progress', (value) => {
             progress.clear();
             progress.fillStyle(0xff007f, 0.8);
-            progress.fillRect(252, 242, 296 * value, 16);
+            progress.fillRect(332, 292, 296 * value, 16);
             titleText.setText('LOADING PROTOCOLS: ' + Math.round(value * 100) + '%');
         });
 
@@ -263,8 +263,8 @@ class MenuScene extends Phaser.Scene {
         this.stars = [];
         for (let i = 0; i < 60; i++) {
             this.stars.push({
-                x: Phaser.Math.Between(0, 800),
-                y: Phaser.Math.Between(0, 500),
+                x: Phaser.Math.Between(0, 960),
+                y: Phaser.Math.Between(0, 540),
                 speed: Phaser.Math.FloatBetween(0.2, 1.5),
                 size: Phaser.Math.FloatBetween(0.5, 2),
                 alpha: Phaser.Math.FloatBetween(0.2, 0.8)
@@ -277,7 +277,7 @@ class MenuScene extends Phaser.Scene {
         this.gridOffsetY = 0;
 
         // Visual logo titles
-        this.add.text(400, 160, 'NEON SHOOTER', {
+        this.add.text(480, 180, 'SPACE WAR : SHOOTING', {
             fontFamily: 'Orbitron',
             fontSize: '56px',
             fontWeight: '900',
@@ -285,7 +285,7 @@ class MenuScene extends Phaser.Scene {
             letterSpacing: 6
         }).setOrigin(0.5).setShadow(0, 0, 15, '#00f0ff', true);
 
-        this.add.text(400, 215, 'SPACE DEFENDER CORE', {
+        this.add.text(480, 240, 'SPACE DEFENDER CORE', {
             fontFamily: 'Rajdhani',
             fontSize: '20px',
             fontWeight: '700',
@@ -294,7 +294,7 @@ class MenuScene extends Phaser.Scene {
         }).setOrigin(0.5).setShadow(0, 0, 8, '#ff007f', true);
 
         // Floating start prompt
-        let promptText = this.add.text(400, 320, 'TEKAN SPASI ATAU KLIK UNTUK MEMULAI', {
+        let promptText = this.add.text(480, 335, 'TEKAN SPASI ATAU KLIK UNTUK MEMULAI', {
             fontFamily: 'Orbitron',
             fontSize: '18px',
             fontWeight: '800',
@@ -312,7 +312,7 @@ class MenuScene extends Phaser.Scene {
 
         // Display High Score from local storage
         let highScore = localStorage.getItem('triangleShooterHighScore') || 0;
-        this.add.text(400, 420, `REKOR TERTINGGI: ${highScore}`, {
+        this.add.text(480, 440, `REKOR TERTINGGI: ${highScore}`, {
             fontFamily: 'Orbitron',
             fontSize: '16px',
             fontWeight: '600',
@@ -332,9 +332,9 @@ class MenuScene extends Phaser.Scene {
         this.starGraphics.clear();
         this.stars.forEach(star => {
             star.y += star.speed;
-            if (star.y > 500) {
+            if (star.y > 540) {
                 star.y = 0;
-                star.x = Phaser.Math.Between(0, 800);
+                star.x = Phaser.Math.Between(0, 960);
             }
             this.starGraphics.fillStyle(0xffffff, star.alpha);
             this.starGraphics.fillCircle(star.x, star.y, star.size);
@@ -343,12 +343,12 @@ class MenuScene extends Phaser.Scene {
         // Redraw scrolling cyber-grids
         this.gridGraphics.clear();
         this.gridGraphics.lineStyle(1, 0x00f0ff, 0.08);
-        for (let x = 0; x < 800; x += 50) {
-            this.gridGraphics.lineBetween(x, 0, x, 500);
+        for (let x = 0; x < 960; x += 50) {
+            this.gridGraphics.lineBetween(x, 0, x, 540);
         }
         this.gridOffsetY = (this.gridOffsetY + 1) % 50;
-        for (let y = this.gridOffsetY - 50; y < 500; y += 50) {
-            this.gridGraphics.lineBetween(0, y, 800, y);
+        for (let y = this.gridOffsetY - 50; y < 540; y += 50) {
+            this.gridGraphics.lineBetween(0, y, 960, y);
         }
     }
 
@@ -376,8 +376,8 @@ class GameScene extends Phaser.Scene {
         this.stars = [];
         for (let i = 0; i < 80; i++) {
             this.stars.push({
-                x: Phaser.Math.Between(0, 800),
-                y: Phaser.Math.Between(0, 500),
+                x: Phaser.Math.Between(0, 960),
+                y: Phaser.Math.Between(0, 540),
                 speed: Phaser.Math.FloatBetween(0.4, 2.5),
                 size: Phaser.Math.FloatBetween(0.5, 2.5),
                 alpha: Phaser.Math.FloatBetween(0.3, 0.9)
@@ -406,9 +406,9 @@ class GameScene extends Phaser.Scene {
         this.bombY = 0;
         this.bombGraphics = this.add.graphics();
 
-        // Instantiate player spaceship physics sprite (Shrunk player size)
-        this.player = this.physics.add.sprite(400, 420, 'spaceship');
-        this.player.setScale(0.08); // Shrunk from 0.12
+        // Instantiate player spaceship physics sprite (Shrunk player size even more)
+        this.player = this.physics.add.sprite(480, 460, 'spaceship');
+        this.player.setScale(0.06); // Shrunk from 0.08
         this.player.setCollideWorldBounds(true);
         this.player.setBodySize(this.player.width * 0.65, this.player.height * 0.65); // Tighter hitboxes
         
@@ -416,14 +416,14 @@ class GameScene extends Phaser.Scene {
         this.thrusterParticles = this.add.particles(0, 0, 'particle_dot', {
             speedY: { min: 80, max: 180 },
             speedX: { min: -15, max: 15 },
-            scale: { start: 0.4, end: 0 },
+            scale: { start: 0.3, end: 0 },
             alpha: { start: 0.8, end: 0 },
             tint: 0x00f0ff,
             lifespan: 250,
             frequency: 12,
             blendMode: 'ADD'
         });
-        this.thrusterParticles.startFollow(this.player, 0, 20);
+        this.thrusterParticles.startFollow(this.player, 0, 15);
 
         // Object groups
         this.lasers = this.physics.add.group();
@@ -464,33 +464,33 @@ class GameScene extends Phaser.Scene {
             return;
         }
 
-        // Draw drifting starfields
+        // Draw drifting starfields (Widescreen bounds)
         this.starGraphics.clear();
         this.stars.forEach(star => {
             star.y += star.speed;
-            if (star.y > 500) {
+            if (star.y > 540) {
                 star.y = 0;
-                star.x = Phaser.Math.Between(0, 800);
+                star.x = Phaser.Math.Between(0, 960);
             }
             this.starGraphics.fillStyle(0xffffff, star.alpha);
             this.starGraphics.fillCircle(star.x, star.y, star.size);
         });
 
-        // Draw scrolling grid
+        // Draw scrolling grid (Widescreen bounds)
         this.gridGraphics.clear();
         this.gridGraphics.lineStyle(1, 0x00f0ff, 0.08);
-        for (let x = 0; x < 800; x += 50) {
-            this.gridGraphics.lineBetween(x, 0, x, 500);
+        for (let x = 0; x < 960; x += 50) {
+            this.gridGraphics.lineBetween(x, 0, x, 540);
         }
         this.gridOffsetY = (this.gridOffsetY + 1.5) % 50;
-        for (let y = this.gridOffsetY - 50; y < 500; y += 50) {
-            this.gridGraphics.lineBetween(0, y, 800, y);
+        for (let y = this.gridOffsetY - 50; y < 540; y += 50) {
+            this.gridGraphics.lineBetween(0, y, 960, y);
         }
 
         // Spaceship movement inputs processing (WASD + Arrows + Mobile joystick)
         let vx = 0;
         let vy = 0;
-        let speed = 280;
+        let speed = 300; // Slightly faster to cross larger canvas
 
         if (this.cursors.left.isDown || this.wasd.A.isDown || window.mobileControls.left) {
             vx = -speed;
@@ -518,7 +518,7 @@ class GameScene extends Phaser.Scene {
         // Active shooting trigger handler (Space key or click-drag screen or mobile action)
         let isShooting = this.space.isDown || this.input.activePointer.isDown || window.mobileControls.shoot;
         // Ignore clicks if they fall on floating UI buttons container (dashboard handles this layout)
-        if (this.input.activePointer.isDown && this.input.activePointer.y > 470 && this.input.activePointer.x > 500) {
+        if (this.input.activePointer.isDown && this.input.activePointer.y > 510 && this.input.activePointer.x > 660) {
             isShooting = false;
         }
 
@@ -533,9 +533,9 @@ class GameScene extends Phaser.Scene {
             }
         });
 
-        // Detect passing alien escape penalties
+        // Detect passing alien escape penalties (Lower bounds 570)
         this.enemies.getChildren().forEach(enemy => {
-            if (enemy.y > 530) {
+            if (enemy.y > 570) {
                 enemy.destroy();
                 this.lives--;
                 this.updateUI();
@@ -543,9 +543,9 @@ class GameScene extends Phaser.Scene {
                 this.cameras.main.shake(80, 0.005); // Reduced screen shake
 
                 // Glow flash on escape
-                let redPulse = this.add.particles(enemy.x, 490, 'particle_dot', {
+                let redPulse = this.add.particles(enemy.x, 530, 'particle_dot', {
                     speed: { min: 20, max: 120 },
-                    scale: { start: 0.5, end: 0 },
+                    scale: { start: 0.4, end: 0 },
                     alpha: { start: 0.8, end: 0 },
                     tint: 0xff0055,
                     lifespan: 300,
@@ -564,9 +564,9 @@ class GameScene extends Phaser.Scene {
         this.shieldGraphics.clear();
         if (this.shieldActive) {
             this.shieldGraphics.lineStyle(2, 0x00f0ff, 0.7);
-            this.shieldGraphics.strokeCircle(this.player.x, this.player.y, 38);
+            this.shieldGraphics.strokeCircle(this.player.x, this.player.y, 28); // Shrunk shield radius to match player
             
-            let pulseRad = 32 + Math.sin(time / 80) * 4;
+            let pulseRad = 24 + Math.sin(time / 80) * 3;
             this.shieldGraphics.lineStyle(1, 0x00f0ff, 0.35);
             this.shieldGraphics.strokeCircle(this.player.x, this.player.y, pulseRad);
         }
@@ -574,8 +574,8 @@ class GameScene extends Phaser.Scene {
         // Draw growing bomb shockwave circles
         this.bombGraphics.clear();
         if (this.bombActive) {
-            this.bombRadius += 16 * (delta / 16.66); // scale with delta times
-            let alpha = 1 - (this.bombRadius / 800);
+            this.bombRadius += 18 * (delta / 16.66); // scale with delta times
+            let alpha = 1 - (this.bombRadius / 1000);
             this.bombGraphics.lineStyle(6, 0xff007f, alpha);
             this.bombGraphics.strokeCircle(this.bombX, this.bombY, this.bombRadius);
 
@@ -588,7 +588,7 @@ class GameScene extends Phaser.Scene {
                 }
             });
 
-            if (this.bombRadius >= 800) {
+            if (this.bombRadius >= 1000) {
                 this.bombActive = false;
                 this.bombGraphics.clear();
             }
@@ -635,7 +635,7 @@ class GameScene extends Phaser.Scene {
     spawnEnemy() {
         if (!this.gameActive) return;
 
-        let spawnX = Phaser.Math.Between(30, 770);
+        let spawnX = Phaser.Math.Between(30, 930); // Widescreen coordinates
         let spawnY = -40;
         let enemy = this.enemies.create(spawnX, spawnY, 'alien');
         enemy.setOrigin(0.5);
@@ -652,30 +652,30 @@ class GameScene extends Phaser.Scene {
             type = 'cruiser';
         }
 
-        // Assign sprite attributes dynamically - SHRUNK SIZES AND REDUCED SPEEDS
+        // Assign sprite attributes dynamically - SHRUNK SIZES MORE
         if (type === 'scout') {
             // Scout details: very small, moves moderately fast
-            enemy.setScale(0.045); // Shrunk from 0.08
+            enemy.setScale(0.035); // Shrunk further from 0.045
             enemy.setTint(0xff0055);
-            enemy.setVelocityY(150 + this.level * 10); // Reduced speed
+            enemy.setVelocityY(150 + this.level * 10);
             enemy.setAngularVelocity(Phaser.Math.Between(-140, 140));
             enemy.hp = 1;
             enemy.points = 150;
             enemy.enemyType = 'scout';
         } else if (type === 'cruiser') {
-            // Cruiser details: medium-large, purple, 2 HP (easier)
-            enemy.setScale(0.13); // Shrunk from 0.24
+            // Cruiser details: medium-large, purple, 2 HP
+            enemy.setScale(0.095); // Shrunk further from 0.13
             enemy.setTint(0xbd00ff);
-            enemy.setVelocityY(45 + this.level * 4); // Reduced speed
+            enemy.setVelocityY(45 + this.level * 4);
             enemy.setAngularVelocity(Phaser.Math.Between(-30, 30));
-            enemy.hp = 2; // Reduced HP from 3 to 2
+            enemy.hp = 2;
             enemy.points = 400;
             enemy.enemyType = 'cruiser';
         } else {
             // Normal fighter: standard size, green, normal speed
-            enemy.setScale(0.075); // Shrunk from 0.13
+            enemy.setScale(0.055); // Shrunk further from 0.075
             enemy.setTint(0x39ff14);
-            enemy.setVelocityY(90 + this.level * 8); // Reduced speed
+            enemy.setVelocityY(90 + this.level * 8);
             enemy.setAngularVelocity(Phaser.Math.Between(-70, 70));
             enemy.hp = 1;
             enemy.points = 100;
@@ -757,9 +757,9 @@ class GameScene extends Phaser.Scene {
             this.time.delayedCall(100, () => {
                 for (let i = -1; i <= 1; i += 2) {
                     let scout = this.enemies.create(spawnX + (i * 25), spawnY, 'alien');
-                    scout.setScale(0.045); // Shrunk scale
+                    scout.setScale(0.035); // Shrunk scale further
                     scout.setTint(0xff0055);
-                    scout.setVelocity(i * 80, 150 + this.level * 10); // Reduced speed
+                    scout.setVelocity(i * 80, 150 + this.level * 10);
                     scout.setAngularVelocity(Phaser.Math.Between(-140, 140));
                     scout.hp = 1;
                     scout.points = 150;
@@ -923,10 +923,10 @@ class GameScene extends Phaser.Scene {
 
             synth.playLevelUp();
             this.cameras.main.flash(300, 0, 240, 255);
-            this.spawnFloatingText(400, 250, `LEVEL UP: ${this.level}!`, '#00f0ff', 32);
+            this.spawnFloatingText(480, 270, `LEVEL UP: ${this.level}!`, '#00f0ff', 32);
 
             // Spawn neon ring bursts
-            let ring = this.add.particles(400, 250, 'particle_dot', {
+            let ring = this.add.particles(480, 270, 'particle_dot', {
                 speed: { min: 100, max: 300 },
                 scale: { start: 0.8, end: 0 },
                 alpha: { start: 1, end: 0 },
@@ -1027,10 +1027,10 @@ class PauseScene extends Phaser.Scene {
     }
 
     create() {
-        // Semitransparent glass backdrop overlay
-        this.add.rectangle(400, 250, 800, 500, 0x000000, 0.65);
+        // Semitransparent glass backdrop overlay (960x540 bounds)
+        this.add.rectangle(480, 270, 960, 540, 0x000000, 0.65);
 
-        this.add.text(400, 210, 'JEDA GAME', {
+        this.add.text(480, 230, 'JEDA GAME', {
             fontFamily: 'Orbitron',
             fontSize: '36px',
             fontWeight: '900',
@@ -1038,7 +1038,7 @@ class PauseScene extends Phaser.Scene {
             letterSpacing: 4
         }).setOrigin(0.5).setShadow(0, 0, 10, '#ffaa00', true);
 
-        this.add.text(400, 270, 'TEKAN P ATAU KLIK TOMBOL "LANJUTKAN" UNTUK KEMBALI BERMAIN', {
+        this.add.text(480, 290, 'TEKAN P ATAU KLIK TOMBOL "LANJUTKAN" UNTUK KEMBALI BERMAIN', {
             fontFamily: 'Rajdhani',
             fontSize: '18px',
             fontWeight: '700',
@@ -1067,10 +1067,10 @@ class GameOverScene extends Phaser.Scene {
     }
 
     create(data) {
-        // Deep background fade overlay
-        this.add.rectangle(400, 250, 800, 500, 0x000000, 0.85);
+        // Deep background fade overlay (960x540 bounds)
+        this.add.rectangle(480, 270, 960, 540, 0x000000, 0.85);
 
-        this.add.text(400, 150, 'GAME OVER', {
+        this.add.text(480, 160, 'GAME OVER', {
             fontFamily: 'Orbitron',
             fontSize: '52px',
             fontWeight: '900',
@@ -1078,7 +1078,7 @@ class GameOverScene extends Phaser.Scene {
             letterSpacing: 4
         }).setOrigin(0.5).setShadow(0, 0, 15, '#ff0055', true);
 
-        this.add.text(400, 225, `SKOR ANDA: ${data.score}`, {
+        this.add.text(480, 235, `SKOR ANDA: ${data.score}`, {
             fontFamily: 'Orbitron',
             fontSize: '24px',
             fontWeight: '800',
@@ -1086,7 +1086,7 @@ class GameOverScene extends Phaser.Scene {
         }).setOrigin(0.5).setShadow(0, 0, 8, '#39ff14', true);
 
         if (data.isNewRecord) {
-            let recordText = this.add.text(400, 275, 'REKOR BARU TERCIPTA!', {
+            let recordText = this.add.text(480, 285, 'REKOR BARU TERCIPTA!', {
                 fontFamily: 'Orbitron',
                 fontSize: '18px',
                 fontWeight: '900',
@@ -1102,7 +1102,7 @@ class GameOverScene extends Phaser.Scene {
             });
         } else {
             let highScore = localStorage.getItem('triangleShooterHighScore') || 0;
-            this.add.text(400, 275, `REKOR TERTINGGI: ${highScore}`, {
+            this.add.text(480, 285, `REKOR TERTINGGI: ${highScore}`, {
                 fontFamily: 'Orbitron',
                 fontSize: '16px',
                 fontWeight: '700',
@@ -1110,7 +1110,7 @@ class GameOverScene extends Phaser.Scene {
             }).setOrigin(0.5);
         }
 
-        let restartPrompt = this.add.text(400, 360, 'TEKAN SPASI ATAU KLIK TOMBOL "ULANGI" UNTUK BERMAIN KEMBALI', {
+        let restartPrompt = this.add.text(480, 370, 'TEKAN SPASI ATAU KLIK TOMBOL "ULANGI" UNTUK BERMAIN KEMBALI', {
             fontFamily: 'Rajdhani',
             fontSize: '18px',
             fontWeight: '700',
@@ -1140,8 +1140,8 @@ class GameOverScene extends Phaser.Scene {
 // ==========================================
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 500,
+    width: 960,
+    height: 540,
     parent: 'game-parent',
     backgroundColor: '#03030f',
     physics: {
