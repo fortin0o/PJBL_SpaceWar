@@ -369,7 +369,7 @@ class GameScene extends Phaser.Scene {
     create() {
         this.gameActive = true;
         this.score = 0;
-        this.lives = 3;
+        this.lives = 5; // Start with 5 lives for easier difficulty
         this.level = 1;
         
         // Starfield & Grid layout
@@ -389,7 +389,7 @@ class GameScene extends Phaser.Scene {
 
         // Player core variables
         this.isInvulnerable = false;
-        this.shootCooldown = 200; // ms
+        this.shootCooldown = 180; // ms (Faster shooting rate)
         this.lastShotTime = 0;
         
         // Powerups states
@@ -406,10 +406,9 @@ class GameScene extends Phaser.Scene {
         this.bombY = 0;
         this.bombGraphics = this.add.graphics();
 
-        // Instantiate player spaceship physics sprite
-        // Scaled and rotated downwards by default (generated images are often angled, so we realign it)
+        // Instantiate player spaceship physics sprite (Shrunk player size)
         this.player = this.physics.add.sprite(400, 420, 'spaceship');
-        this.player.setScale(0.12);
+        this.player.setScale(0.08); // Shrunk from 0.12
         this.player.setCollideWorldBounds(true);
         this.player.setBodySize(this.player.width * 0.65, this.player.height * 0.65); // Tighter hitboxes
         
@@ -417,14 +416,14 @@ class GameScene extends Phaser.Scene {
         this.thrusterParticles = this.add.particles(0, 0, 'particle_dot', {
             speedY: { min: 80, max: 180 },
             speedX: { min: -15, max: 15 },
-            scale: { start: 0.6, end: 0 },
+            scale: { start: 0.4, end: 0 },
             alpha: { start: 0.8, end: 0 },
             tint: 0x00f0ff,
             lifespan: 250,
             frequency: 12,
             blendMode: 'ADD'
         });
-        this.thrusterParticles.startFollow(this.player, 0, 30);
+        this.thrusterParticles.startFollow(this.player, 0, 20);
 
         // Object groups
         this.lasers = this.physics.add.group();
@@ -442,8 +441,8 @@ class GameScene extends Phaser.Scene {
         this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.pKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
-        // Spawning timer handler (adjusts dynamically by level)
-        this.spawnDelay = 1100; // Starting delay (ms)
+        // Spawning timer handler (Easier initial spawn delay)
+        this.spawnDelay = 1600; // Starting delay 1.6s
         this.spawnTimerEvent = this.time.addEvent({
             delay: this.spawnDelay,
             callback: this.spawnEnemy,
@@ -541,7 +540,7 @@ class GameScene extends Phaser.Scene {
                 this.lives--;
                 this.updateUI();
                 synth.playHit();
-                this.cameras.main.shake(120, 0.012);
+                this.cameras.main.shake(80, 0.005); // Reduced screen shake
 
                 // Glow flash on escape
                 let redPulse = this.add.particles(enemy.x, 490, 'particle_dot', {
@@ -643,8 +642,8 @@ class GameScene extends Phaser.Scene {
 
         // Generate dynamic difficulty variables based on level
         let randVal = Phaser.Math.Between(1, 100);
-        let scoutProb = Math.min(10 + this.level * 4, 35); // max 35%
-        let bossProb = Math.min(this.level * 3, 20);      // max 20%
+        let scoutProb = Math.min(10 + this.level * 4, 30); // max 30%
+        let bossProb = Math.min(this.level * 2, 15);      // max 15% (lower boss rate)
         
         let type = 'fighter';
         if (randVal <= scoutProb) {
@@ -653,30 +652,30 @@ class GameScene extends Phaser.Scene {
             type = 'cruiser';
         }
 
-        // Assign sprite attributes dynamically
+        // Assign sprite attributes dynamically - SHRUNK SIZES AND REDUCED SPEEDS
         if (type === 'scout') {
-            // Scout details: small, red glowing, moves fast
-            enemy.setScale(0.08);
+            // Scout details: very small, moves moderately fast
+            enemy.setScale(0.045); // Shrunk from 0.08
             enemy.setTint(0xff0055);
-            enemy.setVelocityY(220 + this.level * 15);
+            enemy.setVelocityY(150 + this.level * 10); // Reduced speed
             enemy.setAngularVelocity(Phaser.Math.Between(-140, 140));
             enemy.hp = 1;
             enemy.points = 150;
             enemy.enemyType = 'scout';
         } else if (type === 'cruiser') {
-            // Cruiser details: large, purple glowing, heavy hp
-            enemy.setScale(0.24);
+            // Cruiser details: medium-large, purple, 2 HP (easier)
+            enemy.setScale(0.13); // Shrunk from 0.24
             enemy.setTint(0xbd00ff);
-            enemy.setVelocityY(75 + this.level * 6);
+            enemy.setVelocityY(45 + this.level * 4); // Reduced speed
             enemy.setAngularVelocity(Phaser.Math.Between(-30, 30));
-            enemy.hp = 3;
+            enemy.hp = 2; // Reduced HP from 3 to 2
             enemy.points = 400;
             enemy.enemyType = 'cruiser';
         } else {
-            // Normal fighter: standard size, green glowing, normal speed
-            enemy.setScale(0.13);
+            // Normal fighter: standard size, green, normal speed
+            enemy.setScale(0.075); // Shrunk from 0.13
             enemy.setTint(0x39ff14);
-            enemy.setVelocityY(120 + this.level * 10);
+            enemy.setVelocityY(90 + this.level * 8); // Reduced speed
             enemy.setAngularVelocity(Phaser.Math.Between(-70, 70));
             enemy.hp = 1;
             enemy.points = 100;
@@ -736,31 +735,31 @@ class GameScene extends Phaser.Scene {
         this.updateUI();
 
         synth.playExplosion();
-        this.cameras.main.shake(80, 0.006);
+        this.cameras.main.shake(40, 0.003); // Reduced screen shake
 
         // Neon organic debris blast particles
         let boom = this.add.particles(spawnX, spawnY, 'particle_dot', {
-            speed: { min: 50, max: 220 },
-            scale: { start: 0.6, end: 0 },
-            alpha: { start: 1, end: 0 },
+            speed: { min: 50, max: 180 },
+            scale: { start: 0.5, end: 0 },
+            alpha: { start: 0.9, end: 0 },
             tint: tint,
-            lifespan: 400,
+            lifespan: 300,
             blendMode: 'ADD'
         });
-        boom.explode(18);
-        this.time.delayedCall(400, () => boom.destroy());
+        boom.explode(12);
+        this.time.delayedCall(300, () => boom.destroy());
 
         // Floating score popup texts
         this.spawnFloatingText(spawnX, spawnY, `+${points}`, '#39ff14');
 
-        // Cruiser division: split large cruiser into 2 diagonal flying scouts
+        // Cruiser division: split large cruiser into 2 diagonal flying scouts (Shrunk scouts)
         if (type === 'cruiser') {
             this.time.delayedCall(100, () => {
                 for (let i = -1; i <= 1; i += 2) {
                     let scout = this.enemies.create(spawnX + (i * 25), spawnY, 'alien');
-                    scout.setScale(0.08);
+                    scout.setScale(0.045); // Shrunk scale
                     scout.setTint(0xff0055);
-                    scout.setVelocity(i * 100, 220 + this.level * 15);
+                    scout.setVelocity(i * 80, 150 + this.level * 10); // Reduced speed
                     scout.setAngularVelocity(Phaser.Math.Between(-140, 140));
                     scout.hp = 1;
                     scout.points = 150;
@@ -827,23 +826,23 @@ class GameScene extends Phaser.Scene {
 
         if (type === 'spread') {
             this.powerupSpread = true;
-            this.shootCooldown = 120; // rapid fire rate
+            this.shootCooldown = 110; // rapid fire rate
             this.spawnFloatingText(this.player.x, this.player.y - 40, 'LASER PENYEBARAN!', '#00f0ff');
             document.getElementById('fireRateInfo').textContent = 'Laser: SPREAD (RAPID)';
             document.getElementById('fireRateInfo').style.color = '#00f0ff';
             
             // Clear previous spread timers
             if (this.powerupSpreadTimer) this.powerupSpreadTimer.destroy();
-            this.powerupSpreadTimer = this.time.delayedCall(7000, () => {
+            this.powerupSpreadTimer = this.time.delayedCall(9000, () => { // Increased duration from 7s to 9s
                 this.powerupSpread = false;
-                this.shootCooldown = 200; // Reset
+                this.shootCooldown = 180; // Reset to easier 180ms cooldown
                 document.getElementById('fireRateInfo').textContent = 'Laser: Normal';
                 document.getElementById('fireRateInfo').style.color = '#ffaa00';
             });
         } else if (type === 'shield') {
             this.shieldActive = true;
-            this.shieldHits = 1; // absorb 1 solid hit
-            this.spawnFloatingText(this.player.x, this.player.y - 40, 'PERISAI AKTIF!', '#ffaa00');
+            this.shieldHits = 2; // absorb 2 hits for easier difficulty
+            this.spawnFloatingText(this.player.x, this.player.y - 40, 'PERISAI LAYERS AKTIF!', '#ffaa00');
         } else if (type === 'bomb') {
             // Trigger screen clearing shockwave explosion
             this.bombActive = true;
@@ -863,11 +862,15 @@ class GameScene extends Phaser.Scene {
         enemy.destroy();
 
         if (this.shieldActive) {
-            // Shield absorb hit
-            this.shieldActive = false;
+            this.shieldHits--;
             synth.playShieldHit();
-            this.spawnFloatingText(this.player.x, this.player.y - 40, 'PERISAI HANCUR!', '#ffaa00');
-            this.triggerInvulnerability(1000); // 1s brief immunity frame
+            if (this.shieldHits <= 0) {
+                this.shieldActive = false;
+                this.spawnFloatingText(this.player.x, this.player.y - 40, 'PERISAI HANCUR!', '#ffaa00');
+            } else {
+                this.spawnFloatingText(this.player.x, this.player.y - 40, 'PERISAI RETAK!', '#ffaa00');
+            }
+            this.triggerInvulnerability(1200); // Brief immunity frame on shield hit
             return;
         }
 
@@ -875,25 +878,25 @@ class GameScene extends Phaser.Scene {
         this.lives--;
         this.updateUI();
         synth.playHit();
-        this.cameras.main.shake(250, 0.02);
+        this.cameras.main.shake(150, 0.008); // Reduced screen shake
 
         // Red explosion sparks
         let blood = this.add.particles(this.player.x, this.player.y, 'particle_dot', {
-            speed: { min: 80, max: 240 },
-            scale: { start: 0.7, end: 0 },
+            speed: { min: 80, max: 200 },
+            scale: { start: 0.5, end: 0 },
             alpha: { start: 1, end: 0 },
             tint: 0xff0000,
-            lifespan: 450,
+            lifespan: 350,
             blendMode: 'ADD'
         });
-        blood.explode(22);
-        this.time.delayedCall(450, () => blood.destroy());
+        blood.explode(15);
+        this.time.delayedCall(350, () => blood.destroy());
 
         if (this.lives <= 0) {
             this.endGame();
         } else {
-            // Shield flash invul frames
-            this.triggerInvulnerability(2000);
+            // Shield flash invul frames (longer recovery time)
+            this.triggerInvulnerability(2500); // 2.5 seconds invulnerability
         }
     }
 
@@ -935,7 +938,7 @@ class GameScene extends Phaser.Scene {
             this.time.delayedCall(500, () => ring.destroy());
 
             // Escalate Spawning difficulty
-            this.spawnDelay = Math.max(300, 1100 - (this.level - 1) * 90);
+            this.spawnDelay = Math.max(450, 1600 - (this.level - 1) * 75); // Slower scaling rate
             this.spawnTimerEvent.reset({
                 delay: this.spawnDelay,
                 callback: this.spawnEnemy,
