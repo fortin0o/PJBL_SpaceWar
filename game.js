@@ -829,12 +829,13 @@ class GameScene extends Phaser.Scene {
 
     collectPowerup(player, powerup) {
         let type = powerup.powerupType;
+        // Preserve tint before destroying the sprite
+        let splashColor = powerup.tintTopLeft;
         powerup.destroy();
 
         synth.playPowerup();
         
         // Neon splash effect on collection
-        let splashColor = powerup.tintTopLeft;
         let splash = this.add.particles(this.player.x, this.player.y, 'particle_dot', {
             speed: { min: 80, max: 200 },
             scale: { start: 0.6, end: 0 },
