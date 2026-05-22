@@ -94,6 +94,8 @@ PJBL_SpaceWar/
 
 > **Catatan:** Game memerlukan browser modern yang mendukung HTML5 Canvas dan Web Audio API (Chrome, Firefox, Edge, Safari terbaru).
 
+4. Atau bisa akses link github-pages ini 'https://fortin0o.github.io/PJBL_SpaceWar/'
+
 ---
 
 ## 🎨 Arsitektur Game
